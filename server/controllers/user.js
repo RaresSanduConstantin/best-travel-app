@@ -29,8 +29,6 @@ export const signin = async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    console.log(token)
-
     res.status(200).json({ result: existingUser, token });
   } catch (error) {
     res.status(500).json({ message: 'Something went wrong.' });
