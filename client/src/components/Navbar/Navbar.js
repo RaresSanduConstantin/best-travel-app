@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { AppBar, Avatar, Button, Toolbar, Typography } from '@material-ui/core';
-import memories from '../../images/memoriesLogo.png';
+import memoriesLogo from '../../images/memoriesLogo.png';
+import memoriesText from '../../images/memoriesText.png';
+
 import useStyles from './styles';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { LOGOUT } from '../../constants/actionTypes';
 import decode from 'jwt-decode'
+import { getPersonalPostsByCreator } from '../../actions/posts';
 
 const Navbar = () => {
   const history = useHistory();
@@ -19,6 +22,17 @@ const Navbar = () => {
     dispatch({type: LOGOUT})
     history.push('/')
     setUser(null)
+  }
+
+  const getPersonalPosts = (user) => {
+
+    console.log('user', user)
+    if(user.result.googleId) {
+
+      dispatch(getPersonalPostsByCreator(user.result.googleId));
+    } else {
+      dispatch(getPersonalPostsByCreator(user.result._id));
+    }
   }
 
   useEffect(() => {
@@ -40,27 +54,23 @@ const Navbar = () => {
 
   return (
     <AppBar className={classes.appBar} position='static' color='inherit'>
-      <div className={classes.container}>
-        <Typography
-          component={Link}
-          to='/'
-          className={classes.heading}
-          variant='h3'
-          align='center'
-        >
-          Best Travel App
-        </Typography>
+      <Link to='/' className={classes.container}>
+      <img
+          className={classes.image}
+          src={memoriesText}
+          alt='memoriesText'
+          height='40'
+        />
         <img
           className={classes.image}
-          src={memories}
+          src={memoriesLogo}
           alt='memories'
           height='40'
-          width='40'
         />
-      </div>
+      </Link>
       <Toolbar className={classes.toolbar}>
         {user ? (
-          <div className={classes.profile}>
+          <div className={classes.profile} >
             <Avatar
               className={classes.purple}
               alt={user.result.name}
@@ -68,9 +78,14 @@ const Navbar = () => {
             >
               {user.result.name.charAt(0)}
             </Avatar>
+            <div style={{display:'flex', flexDirection:'column'}}>
             <Typography className={classes.userName} variant='h6'>
               {user.result.name}
             </Typography>
+            <Typography style={{cursor:'pointer', fontSize:'1em'}} className={classes.userName} onClick={() => getPersonalPosts(user)}>
+              See my posts
+            </Typography>
+            </div>
             <Button
               variant='contained'
               className={classes.logout}

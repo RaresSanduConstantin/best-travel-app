@@ -11,9 +11,7 @@ export const Form = () => {
 
   const currentId = useSelector((state) => state.postId)
 
-  const post = useSelector((state) =>
-    currentId ? state.posts.find((p) => p._id === currentId) : null
-  );
+  const post = useSelector((state) => (currentId ? state.posts.posts.find((message) => message._id === currentId) : null));
 
   const user = JSON.parse(localStorage.getItem('profile'))
 
@@ -50,6 +48,7 @@ export const Form = () => {
       title: '',
       message: '',
       tags: '',
+      selectedFile:''
     });
   };
 
@@ -64,7 +63,7 @@ export const Form = () => {
   }
 
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} elevation={6}>
       <form
         autoComplete='off'
         noValidate
